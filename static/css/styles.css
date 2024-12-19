@@ -1,0 +1,42 @@
+#video-compare-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 100px; /* 원하는 높이 */
+  overflow: hidden;
+}
+
+#video-compare-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#video-clipper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%; /* 초기 슬라이더 위치 */
+  overflow: hidden;
+}
+
+#video-clipper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+#videoPlay{
+  padding: 40px;
+  margin: 40px auto;
+  display:block
+}
+

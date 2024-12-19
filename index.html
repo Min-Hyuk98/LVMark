@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="3D Scene Editing Framework">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EditSplat: Multi-View Fusion and Attention-Guided Optimization</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Kalam:wght@300;400&family=Shadows+Into+Light&family=Google+Sans&family=Noto+Sans&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/styles.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <!-- Optional CSS (Remove if not needed) -->
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            EditSplat: Multi-View Fusion and Attention-Guided Optimization for View-Consistent 3D Scene Editing with 3D Gaussian Splatting
+          </h1>
+          <div class="is-size-4 publication-authors">
+            <span class="author-block">Dong In Lee<sup>1</sup>, Hyeongcheol Park<sup>1</sup>, Jiyoung Seo<sup>1</sup>, Eunbyung Park<sup>2</sup>,<br> Hyunje Park<sup>1</sup>, Ha Dam Baek<sup>1</sup>, Shin Sangheon<sup>3</sup>, Sangmin Kim<sup>3</sup>, Sangpil Kim<sup>1</sup></span><br>
+          </div>
+
+          <br>
+
+          <div class="is-size-5 publication-affiliations">
+            <span class="affiliation-block"><sup>1</sup>Korea University</span>
+            <span class="affiliation-block"><sup>2</sup>Sungkyunkwan University</span>
+            <span class="affiliation-block"><sup>3</sup>Hanhwa Systems</span><br>
+          </div>
+
+          <!-- <br> -->
+
+          <div class="column has-text-centered">
+            
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+             <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+
+              <h2 class="subtitle" style="font-family: 'Kalam', cursive; font-size: 1.2em; margin-top: 10px;">
+                Code will be released soon 😊
+              </h2>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Figure Section -->
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div class="columns is-centered has-text-centered" style="width: 100%; margin: 0px 0 0;">
+        <div class="column" style="width: 10%; padding: 0;">
+            <h2 class="title is-3"> Overview </h2> 
+        <img src="static/imgs/Main_fig.png" alt="Teaser" style="width: 100%; height: auto;" />
+        <figcaption class="custom-caption">
+          <strong> Editsplat Overview.</strong> EditSplat consists of two main methods: 
+          (1) Multi-view Fusion Guidance <strong>(MFG)</strong>, which aligns multi-view information with text prompts and source images to ensure multi-view consistency; 
+          (2) Attention-Guided Trimming<strong> (AGT)</strong>, which prunes pre-trained Gaussians for optimization efficiency and selectively optimizes Gaussians for semantic local editing.
+      </figcaption>
+  </figure>
+    </div>    
+  </div>
+</div>
+</section>
+
+<br> 
+<h2 class="subtitle has-text-centered">
+</h2>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered" style="width: 100%; margin: 50px 0 0;">
+        <div class="column" style="width: 80%; padding: 0;">
+            <h2 class="title is-3"> Abstract </h2>
+            <div class="content has-text-justified">
+                Recent advancements in 3D editing have highlighted the potential of text-driven methods in real-time, user-friendly AR/VR applications. However, current methods rely on 2D diffusion models without adequately considering multi-view information, resulting in multi-view inconsistency. While 3D Gaussian Splatting (3DGS) significantly improves rendering quality and speed, its 3D editing process encounters difficulties with inefficient optimization, as pre-trained Gaussians retain excessive source information, hindering optimization. To address these limitations, we propose <strong> EditSplat</strong>, a novel 3D editing framework that integrates Multi-view Fusion Guidance (MFG) and Attention-Guided Trimming (AGT). Our MFG ensures multi-view consistency by incorporating essential multi-view information into the diffusion process, leveraging classifier-free guidance from the text-to-image diffusion model and the geometric properties of 3DGS. Additionally, our AGT leverages the explicit representation of 3DGS to selectively prune and optimize 3D Gaussians, enhancing optimization efficiency and enabling precise, semantically rich local edits. Through extensive qualitative and quantitative evaluations, EditSplat achieves superior multi-view consistency and editing quality over existing methods, significantly enhancing overall efficiency.
+            </div>
+        </div>
+    </div>
+    <!--/ Abstract. -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Video -->
+    <div class="columns is-centered has-text-centered" style="width: 100%; margin: 70px 0 0;">
+        <div class="column" style="width: 100%; padding: 0;">
+            <h2 class="title is-3"> Rendered Video Results </h2> 
+            <h2 class="subtitle has-text-centered" style="width: 100%; margin: 30px 0 0;">
+              <span class="dnerf"><strong> EditSplat</span> </strong> . demonstrates its capability for flexible and high-quality 3D scene editing.
+            </h2>
+<br>
+
+<!-- Videos Section -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Sync</title>
+  <link rel="stylesheet" href="static/css/video_styles.css">
+</head>
+<body>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row">
+      <!-- 왼쪽 비디오 -->
+      <figure class="left-video-wrapper">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/bear.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> Source </strong>
+        </figcaption>
+      </figure>
+
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bear_Turn_the_bear_statue_into_a_wild_boar.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn the bear statue into <span style='color: #0253c5;'>wild boar</span>" </strong>
+      </figcaption>
+    </figure>
+
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bear_Turn_the_bear_statue_into_a_polar_bear.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn the bear statue into <span style='color: #0253c5;'>polar bear</span>" </strong>
+      </figcaption>
+    </figure>
+
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bear_Turn_the_bear_statue_into_a_metallic_robot.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn the bear statue into a <span style='color: #0253c5;'> metallic robot</span>" </strong>
+      </figcaption>
+    </figure>
+
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+<br>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row">
+      <!-- 왼쪽 비디오 -->
+      <figure class="left-video-wrapper">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/bicycle.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> Source </strong>
+        </figcaption>
+      </figure>
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bicycle_Make_it_autumn.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make it <span style='color: #0253c5;'>autumn</span>" </strong>
+      </figcaption>
+    </figure>
+
+
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bicycle_Turn_the_ground_into_a_namibian_desert.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn the ground into a <span style='color: #0253c5;'>namibian desert</span>" </strong>
+      </figcaption>
+    </figure>
+
+
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bicycle_Make_the_entire_scene_look_as_if_its_painted_in_watercolor_style.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make the entire scene look as if it's painted in <span style='color: #0253c5;'>watercolor style</span>" </strong>
+      </figcaption>
+    </figure>
+
+    </div>
+  </div>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+
+<br>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row">
+      <!-- 왼쪽 비디오 -->
+      <figure class="left-video-wrapper">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/bonsai.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> Source </strong>
+        </figcaption>
+      </figure>
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bonsai_Change_the_bonsai_to_look_like_its_made_of_paper.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Change the bonsai to look like it's made of <span style='color: #0253c5;'>paper, folded intricate origami shapes</span>" </strong>
+      </figcaption>
+    </figure>
+
+
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bonsai_Make_the_bonsai_flowers_into_autumn_leaves.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Change the bonsai flowers into <span style='color: #0253c5;'>autumn leaves</span>" </strong>
+      </figcaption>
+    </figure>
+
+
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bonsai_Make_the_bonsai_snowy.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make the bonsai <span style='color: #0253c5;'>snowy</span>" </strong>
+      </figcaption>
+    </figure>
+ 
+    </div>
+  </div>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+<br>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container">
+
+    <!-- 첫 번째 줄 (소스 비디오) -->
+    <div class="video-row video-row-square">
+
+      <figure class="left-video-wrapper2">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/face.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+        <figcaption> <strong> Source </strong> </figcaption>
+      </figure>
+
+      <figure class="video-wrapper">
+        <video class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/face_Turn_him_into_Harry_Potter.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+        <figcaption> <strong> "Turn him into <span style='color: #0253c5;'>Harry Potter</span>" </strong> </figcaption>
+      </figure>
+
+      <figure class="video-wrapper">
+        <video class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/face_Make_his_face_resemble_that_of_a_marble_sculpture.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+        <figcaption> <strong> "Make his face resemble that of a <span style='color: #0253c5;'>marble sculpture</span>" </strong> </figcaption>
+      </figure>
+
+      <figure class="video-wrapper">
+        <video class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/face_Make_him_appear_like_paper_with_folded_edges.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+        <figcaption> <strong> "Make him appear like <span style='color: #0253c5;'>paper with folded edges</span>" </strong> </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+<br>
+
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row video-row-portrait">
+      <!-- 왼쪽 비디오 -->
+      <figure class="left-video-wrapper3">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/fangzhou.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+        <strong>Source </strong></figcaption>
+      </figure>
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/fangzhou_Turn_him_into_Van_Gogh.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+         <strong> "Turn him into <span style='color: #0253c5;'>Van Gogh</span>" </strong> </figcaption>
+      </figure>
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/fangzhou_Turn_him_into_Steve_Jobs.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+         <strong> "Turn him into <span style='color: #0253c5;'>Steve Jobs</span>" </strong> </figcaption>
+      </figure>
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/fangzhou_Turn_him_into_a_Pixar_character.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+         <strong>"Turn him into a <span style='color: #0253c5;'>Pixar character</span>" </strong> </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+
+<br>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row">
+            <!-- 왼쪽 비디오 -->
+            <figure class="left-video-wrapper">
+              <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+                <source src="./EditSplat_RENDERING_RESULTS/SOURCE/garden.mp4" type="video/mp4">
+              </video>
+              <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+                <strong> Source </strong>
+              </figcaption>
+            </figure>
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/garden_Make_it_autumn.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make it <span style='color: #0253c5;'>autumn</span>" </strong>
+      </figcaption>
+    </figure>
+
+
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/garden_Make_the_scene_look_foggy.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make the scene look <span style='color: #0253c5;'>foggy</span>" </strong>
+      </figcaption>
+    </figure>
+   
+
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/garden_Make_the_scene_appear_as_though_its_underwater.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make the scene appear as though it's <span style='color: #0253c5;'>underwater</span>" </strong>
+      </figcaption>
+    </figure>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+<br>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row video-row-portrait">
+      <!-- 왼쪽 비디오 -->
+      <figure class="left-video-wrapper3">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/person.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> Source </strong>
+        </figcaption>
+      </figure>
+
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper video-portrait">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/person_Make_him_wear_a_suit.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make him wear a <span style='color: #0253c5;'>suit</span>" </strong>
+        </figcaption>
+      </figure>
+
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper video-portrait">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/person_Turn_him_into_a_Minecraft_character.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn him into a <span style='color: #0253c5;'>Minecraft character</span>" </strong>
+        </figcaption>
+      </figure>
+
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper video-portrait">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/person_Turn_him_into_a_robot.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn him into a <span style='color: #0253c5;'>robot</span>" </strong>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+<br>
+<section class="hero teaser" style="background-color: #cecece6c; padding: 15px; border-radius: 8px;">
+  <div class="container is-max-desktop">
+    <div class="video-row">
+      <!-- 왼쪽 비디오 -->
+      <figure class="left-video-wrapper">
+        <video id="teaser0" class="sync-video" autoplay muted loop playsinline>
+          <source src="./EditSplat_RENDERING_RESULTS/SOURCE/stone_horse.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> Source </strong>
+        </figcaption>
+      </figure>
+      <!-- 첫 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser1" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/stone_horse_Turn_the_horse_statue_into_a_jade_carving.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn the horse statue into a  <span style='color: #0253c5;'>jade carving</span>" </strong>
+      </figcaption>
+    </figure>
+
+      <!-- 두 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser2" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/stone_horse_Turn_the_horse_statue_into_a_wooden_carving.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Turn the horse statue into a  <span style='color: #0253c5;'>wooden carving</span>" </strong>
+      </figcaption>
+    </figure>
+
+
+      <!-- 세 번째 비디오 -->
+      <figure class="video-wrapper">
+        <video id="teaser3" class="sync-video" autoplay muted loop playsinline>
+          <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/stone_horse_Make_the_stone_horse_appear_as_a_metallic_robot_horse.mp4" type="video/mp4">
+        </video>
+        <figcaption style="font-family: 'Kalam', cursive; margin-top: 1px;">
+          <strong> "Make the stone horse appear as a  <span style='color: #0253c5;'>metallic robot horse</span>" </strong>
+      </figcaption>
+    </figure>
+</section>
+<script src="static/js/sync-videos.js"></script>
+
+
+<br><br>
+
+  <h2 class="subtitle" style="font-family: 'Kalam', cursive; font-size: 1.4em;">
+    Sync settings are enabled, so videos might not play immediately 😔 <br>
+    Please refresh the page! Thank you for your patience 😊
+  </h2>
+
+
+<br><br> <br><br>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+    <!-- Comparison -->
+    <div class="columns is-centered has-text-centered" style="width: 100%; margin: 15px 10px 0;">
+        <div class="column" style="width: 100%; padding: 0;">
+            <h2 class="title is-3"> Qualitative Comparison </h2>
+            <br> 
+
+            <h2 class="subtitle" style="font-family: 'Kalam', cursive; text-align: center; font-size: 1.5em;">
+              📷 <strong> Click </strong> on video to play or pause. <strong> Move</strong> mouse to change the hover  📷
+            </h2>
+            
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Scene Editing Results</title>
+            <!-- Bootstrap CSS -->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Comparison Slider</title>
+            
+              <link rel="stylesheet" href="static/css/slidebar-container.css">
+            </head>
+            
+            <!-- Tabs -->
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Face</a>
+                <a class="nav-item nav-link" id="nav-bonsai-tab" data-bs-toggle="tab" href="#nav-bonsai" role="tab" aria-controls="nav-bonsai" aria-selected="false">Bonsai</a>
+                <a class="nav-item nav-link" id="nav-bicycle-tab" data-bs-toggle="tab" href="#nav-bicycle" role="tab" aria-controls="nav-bicycle" aria-selected="false">Bicycle</a>
+                <a class="nav-item nav-link" id="nav-person-tab" data-bs-toggle="tab" href="#nav-person" role="tab" aria-controls="nav-person" aria-selected="false">Person</a>
+                <a class="nav-item nav-link" id="nav-garden-tab" data-bs-toggle="tab" href="#nav-garden" role="tab" aria-controls="nav-garden" aria-selected="false">Garden</a>
+              </div>
+            </nav>
+            
+            <!-- Tabs Content -->
+            <div class="tab-content" id="nav-tabContent">
+              <!-- Face Tab -->
+              <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="container h-100 pt-3 pb-3">
+                  <div class="custom-video-block-face">
+                    <h3 class="title" style="font-family: 'Kalam', cursive; text-align: center; font-size: 16px; margin-bottom: 5px;">
+                      "Make his face resemble that of a <span style="color: #0253c5;">marble sculpture</span>"
+                    </h3>
+                    <div style="display: flex; justify-content: space-between; text-align: center; font-size: 15px; margin-bottom: 2px; padding: 5px;">
+                      <span style="margin-left: 10px;"><strong>DGE</strong></span>
+                      <span style="margin-right: 10px;"><strong>EditSplat (Ours)</strong></span>
+                    </div>
+                    <div class="video-compare-container-face" data-slider>
+                      <video class="left-video" id="face-left-video" loop autoplay>
+                        <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/face_Make_his_face_resemble_that_of_a_marble_sculpture.mp4" type="video/mp4">
+                      </video>
+                      <div class="slider-bar">
+                        <div class="slider-divider"></div>
+                        <video class="right-video" id="face-right-video" loop autoplay>
+                          <source src="static/DGE_rendering_results/face_marble_DGE.mp4" type="video/mp4">
+                        </video>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+              <!-- Bonsai Tab -->
+              <div class="tab-pane fade" id="nav-bonsai" role="tabpanel" aria-labelledby="nav-bonsai-tab">
+                <div class="container h-100 pt-3 pb-3">
+                  <div class="custom-video-block">
+                    <h3 class="title" style="font-family: 'Kalam', cursive; text-align: center; font-size: 20px; margin-bottom: 5px;">
+                      "Make the bonsai <span style="color: #0253c5;">snowy</span>"
+                    </h3>
+                    <div style="display: flex; justify-content: space-between; text-align: center; font-size: 18px; margin-bottom: 2px; padding: 5px;">
+                      <span style="margin-left: 10px;"><strong>DGE</strong></span>
+                      <span style="margin-right: 10px;"><strong>EditSplat (Ours)</strong></span>
+                    </div>
+                    <div class="video-compare-container" data-slider>
+                      <video class="left-video" id="bonsai-left-video" loop autoplay>
+                        <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bonsai_Make_the_bonsai_snowy.mp4" type="video/mp4">
+                      </video>
+                      <div class="slider-bar">
+                        <div class="slider-divider"></div>
+                        <video class="right-video" id="bonsai-right-video" loop autoplay>
+                          <source src="static/DGE_rendering_results/bonsai_snowy_DGE.mp4" type="video/mp4">
+                        </video>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+            <!-- Bicycle Tab -->
+            <div class="tab-pane fade" id="nav-bicycle" role="tabpanel" aria-labelledby="nav-bicycle-tab">
+              <div class="container h-100 pt-3 pb-3">
+                <div class="custom-video-block">
+                  <h3 class="title" style="font-family: 'Kalam', cursive; text-align: center; font-size: 20px; margin-bottom: 5px;">
+                    "Turn the ground into <span style="color: #0253c5;">namibian desert</span>"
+                  </h3>
+                  <div style="display: flex; justify-content: space-between; text-align: center; font-size: 18px; margin-bottom: 2px; padding: 5px;">
+                    <span style="margin-left: 10px;"><strong>DGE</strong></span>
+                    <span style="margin-right: 10px;"><strong>EditSplat (Ours)</strong></span>
+                  </div>
+                  <div class="video-compare-container" data-slider>
+                    <video class="left-video" id="bicycle-left-video" loop autoplay>
+                      <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/bicycle_Turn_the_ground_into_a_namibian_desert.mp4" type="video/mp4">
+                    </video>
+                    <div class="slider-bar">
+                      <div class="slider-divider"></div>
+                      <video class="right-video" id="bicycle-right-video" loop autoplay>
+                        <source src="static/DGE_rendering_results/bicycle_desert_DGE.mp4" type="video/mp4">
+                      </video>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Person Tab -->
+            <div class="tab-pane fade" id="nav-person" role="tabpanel" aria-labelledby="nav-person-tab">
+            <div class="container h-100 pt-3 pb-3">
+              <div class="custom-video-block-person">
+                <h3 class="title" style="font-family: 'Kalam', cursive; text-align: center; font-size: 15px; margin-bottom: 5px;">
+                  "Turn him into a <span style="color: #0253c5;">minecraft character</span>"
+                </h3>
+                <div style="display: flex; justify-content: space-between; text-align: center; font-size: 15px; margin-bottom: 2px; padding: 3px;">
+                  <span style="margin-left: 10px;"><strong>DGE</strong></span>
+                  <span style="margin-right: 10px;"><strong>EditSplat (Ours)</strong></span>
+                </div>
+                <div class="video-compare-container-person" data-slider>
+                  <video class="left-video" id="person-left-video" loop autoplay>
+                    <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/person_Turn_him_into_a_Minecraft_character.mp4" type="video/mp4">
+                  </video>
+                  <div class="slider-bar">
+                    <div class="slider-divider"></div>
+                    <video class="right-video" id="person-right-video" loop autoplay>
+                      <source src="static/DGE_rendering_results/person_minecraft_DGE.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            
+            
+            <!-- Garden Tab -->
+            <div class="tab-pane fade" id="nav-garden" role="tabpanel" aria-labelledby="nav-garden-tab">
+            <div class="container h-100 pt-3 pb-3">
+              <div class="custom-video-block">
+                <h3 class="title" style="font-family: 'Kalam', cursive; text-align: center; font-size: 20px; margin-bottom: 5px;">
+                  "Make it <span style="color: #0253c5;">autumn</span>"
+                </h3>
+                <div style="display: flex; justify-content: space-between; text-align: center; font-size: 18px; margin-bottom: 2px; padding: 5px;">
+                  <span style="margin-left: 10px;"><strong>DGE</strong></span>
+                  <span style="margin-right: 10px;"><strong>EditSplat (Ours)</strong></span>
+                </div>
+                <div class="video-compare-container" data-slider>
+                  <video class="left-video" id="garden-left-video" loop autoplay>
+                    <source src="EditSplat_RENDERING_RESULTS/RENDERING_RESULTS/garden_Make_it_autumn.mp4" type="video/mp4">
+                  </video>
+                  <div class="slider-bar">
+                    <div class="slider-divider"></div>
+                    <video class="right-video" id="garden-right-video" loop autoplay>
+                      <source src="static/DGE_rendering_results/garden_autumn_DGE.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            </div>            
+            <!-- Bootstrap JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Custom Slider Logic -->
+            <script src="static/js/slidebar-container.js"></script>    
+            </body>
+            </html>
+
+            <br>
+      <div class="content has-text-justified">
+    <div class="figure-wrapper">
+      <img src="static/imgs/qualitative_comparison.png" alt="Teaser" class="centered-image" style="width: 90%;"  margin-top: 60px />
+      <figcaption class="custom-caption">
+        <strong> Qualitative Comparison. </strong>
+        EditSplat provides more intense and precise editing compared to other baselines.
+        The leftmost column shows source images, while the right columns show rendering images from edited 3DGS. In each corner of the images, we include different views of the corresponding image to compare multi-view consistency. Note that our EditSplat outperforms both local and global editing.
+      </figcaption>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- <br><br><br>
+
+<br><br> -->
+</section>
+<section class="hero teaser">
+<div class="container is-max-desktop">
+  <div class="hero-body">
+  <!-- Quantitative comparison -->
+  <div class="columns is-centered has-text-centered" style="width: 100%; margin: 100px 0 0;">
+      <div class="column" style="width: 70%; padding: 0;">
+          <h2 class="title is-3"> Quantitative Comparison </h2>
+          <figure class="figure-wrapper">
+            <img src="static/imgs/quantitative_comparison.png" alt="Teaser" class="centered-image" style="width: 60%;" />
+            <figcaption class="custom-caption">
+              <strong> Quantitative Comparison.</strong> CLIPdir: CLIPtext-image
+              direction similarity; CLIPsim: CLIPtext-image similarity. Userstudy conducted to evaluate human preference.
+            </figcaption>
+          </figure>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{lee2024editsplat,
+      title={EditSplat: Multi-View Fusion and Attention-Guided Optimization for View-Consistent 3D Scene Editing with 3D Gaussian Splatting},
+      author={Dong In Lee and Hyeongcheol Park and Jiyoung Seo and Eunbyung Park and Hyunje Park and Ha Dam Baek and Shin Sangheon and Sangmin Kim and Sangpil Kim},
+      journal={arXiv preprint arXiv:2412.XXXX},
+      year={2024},
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="././static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            We borrow the <a href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            A heartfelt thanks to the original creators! 💖
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</html>
